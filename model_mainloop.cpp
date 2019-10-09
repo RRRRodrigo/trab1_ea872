@@ -15,7 +15,7 @@ int main ()
   Corpo *mainplayer = new Corpo(10, 0, 10);
 
   ListaDeCorpos *l = new ListaDeCorpos();
-  l->add_corpo(mainplayer);
+  l->add_corpo(mainplayer); //cria corpo para o main player
 
   Fisica *f = new Fisica(l);
 
@@ -26,7 +26,7 @@ int main ()
   teclado->init();
 
   Projetil *projetil = new Projetil();
-  projetil->gerar(0.99);
+  projetil->gerar(0.99); //O mapa e gerado aleatoriamente, mais detalhes na funcao gerar
 
   uint64_t t0;
   uint64_t t1;
@@ -52,9 +52,6 @@ int main ()
 
     // Atualiza tela
     tela->update(projetil->mapa);
-    
-    //checar jogadores vivos
-    
 
     // Lê o teclado
     char c = teclado->getchar();
@@ -65,12 +62,6 @@ int main ()
       case 's':
         f->step(-1);
       break;
-      case 'f':
-        f->salto(1);
-      break;
-      case 'r':
-        f->salto(-1);
-      break;
       case 'q':
         quit = !quit;
       break;
@@ -79,13 +70,13 @@ int main ()
       break;
     // Condicao de parada
     if ( (t1-T) > 1000000 ) break;
-
+    // O framerate do jogo e de 30 fps, e a velocidade do mesmo esta relacionada ao mesmo. O jogo pode ficar mais rapido (e por consequencia, mais dificil) manipulando este framerate
     std::this_thread::sleep_for (std::chrono::milliseconds(32));
     i++;
   }
   tela->stop();
   teclado->stop();
+  //Imprime a pontuacao do jogo. A pontuacao e baseada no periodo de tempo em que o jogador ficou vivo.
   std::cout << "Pontuação: " << (t1-T)/50 << ".\n";
   return 0;
-}
 }

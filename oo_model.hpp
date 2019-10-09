@@ -34,7 +34,7 @@ class Projetil {
     public:
     char** mapa; //linha e coluna
     void gerar(float chance);
-    Projetil(); //talvez seja desnecessário
+    Projetil(); 
     ~Projetil();
     bool update(Corpo* corpo);
 };

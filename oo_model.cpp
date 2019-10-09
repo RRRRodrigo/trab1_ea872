@@ -59,14 +59,14 @@ std::vector<Corpo*> *ListaDeCorpos::get_corpos() {
   return (this->corpos);
 }
 
-Projetil::Projetil(){
+Projetil::Projetil(){ //Cria o mapa de projeteis
   this->mapa = (char**)malloc(MAX_Y * sizeof(char*));
   for(int i=0;i<MAX_Y;i++){
     this->mapa[i] = (char*)malloc(MAX_X * sizeof(char));
   }
 }
 
-void Projetil::gerar(float chance){
+void Projetil::gerar(float chance){ //O mapa e gerado colocando obstaculos aleatorios nele. Um numero aleatorio e adquirido para cada posicao do mapa, com uma chance de 1% de colocar um obstaculo naquela posicao do mapa.
     // RAND_MAX
     int i = 0, j = 0;
     int alea;
@@ -82,9 +82,12 @@ void Projetil::gerar(float chance){
     }
 }
 
-bool Projetil::update(Corpo* corpo){
+bool Projetil::update(Corpo* corpo){ //A funcao de update atualiza as posicoes do mapa e checa se o jogador cometeu uma colisao ou nao. Caso o jogador tenha atingido um obstaculo, a funcao retorna 1 e o jogo e terminado na main.
   //mover tudo pra esquerda
-  //checar colisão
+  for(int i=0;i<MAX_Y;i++){
+    if(mapa[i][0] == '#');
+	  mapa[i][0] = ' ';
+  }
   for(int i=0;i<MAX_Y;i++){
      for(int j=0;j<MAX_X-1;j++){
         if(mapa[i][j+1] == '#')
@@ -115,7 +118,7 @@ void Fisica::update(float deltaT) {
   }
 }
 
-void Fisica::salto(float direcao) {
+void Fisica::salto(float direcao) { //funcao nao implementada no projeto final
   // Atualiza parametros dos corpos!
   std::vector<Corpo *> *c = this->lista->get_corpos();
 
@@ -134,7 +137,7 @@ void Fisica::salto(float direcao) {
   }
 }
 
-void Fisica::step(float direcao) {
+void Fisica::step(float direcao) { //Move o jogador, a direcao negativa move o jogador para baixo e vice-versa
   std::vector<Corpo *> *c = this->lista->get_corpos();
 
   float new_pos = (*c)[0]->get_posicao() - 1*(direcao);
@@ -162,7 +165,7 @@ void Tela::init() {
   curs_set(0);           /* Do not display cursor */
 }
 
-void Tela::update(char** mapa){ //parar de deletar a coluna do objeto
+void Tela::update(char** mapa){ 
   int i, k;
   std::vector<Corpo *> *corpos_old = this->lista_anterior->get_corpos();
   // Apaga corpos na tela
@@ -180,9 +183,9 @@ void Tela::update(char** mapa){ //parar de deletar a coluna do objeto
 
   for (k=0; k<corpos->size(); k++)
   {
-    i = (int) ((*corpos)[k]->get_posicao()) * \
+    i = (int) ((*corpos)[k]->get_posicao()) * \ 
         (this->maxI / this->maxX);
-
+//posicao atual do jogador
     if(i+20 < this->maxY){
     	move(i+20, k);   /* Move cursor to position */
     	echochar('*');  /* Prints character, advances a position */
@@ -193,14 +196,15 @@ void Tela::update(char** mapa){ //parar de deletar a coluna do objeto
                                (*corpos)[k]->get_posicao());
   }
 
-  //Escrever o mapa
-  
+  //Escreve o mapa no terminal do ncurses
   for (int j=0; j<20; j++) { 
     for (int k=0;k<20;k++){
-      move(j+20, k);
-      echochar(mapa[j][k]);
+       move(j+20, k);
+       echochar(mapa[j][k]);
     }
   }
+  move(i+20, 0); //reescreve o ponto no terminal do ncurses
+  echochar('*');
   return;
   // Atualiza tela
   refresh();
@@ -256,5 +260,3 @@ char Teclado::getchar() {
   return c;
 }
 
-
-}
